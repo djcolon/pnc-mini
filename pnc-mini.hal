@@ -28,11 +28,31 @@
 	addf estop_latch servo-thread
 
 # vfdmod
-	net spindle-speed-cmd => vfdmod.spindle.rpm-in <= spindle.0.speed-out
+	# The Invertek E3 wants a negative speed to reverse direction.
+	# We'll create a positive and negative version of spindle speed,
+	# and use the mux2 HAL function to feed one or the other into vfdmod
+	# depending on how reverse is set.
+	loadrt mult2 count=1
+	addf mult2.0 servo-thread
+	net spindle-speed-fwd <= spindle.0.speed-out
+	net spindle-speed-fwd => mult2.0.in0
+	setp mult2.0.in1 -1
+	net mult2.0.out => spindle-speed-rev
+	
+	
+	loadrt mux2 count=1
+	addf mux2.0 servo-thread
+	net spindle-reverse => mux2.0.sel <= spindle.0.reverse
+	net reverse-spindle-out => mux2.0.in1 <= spindle-speed-rev
+	net spindle-speed-fwd => mux2.0.in0
+	net mux2.0.out => vfdmod.spindle.rpm-in
+	
+	# net spindle-speed-cmd => vfdmod.spindle.rpm-in <= spindle.0.speed-out
 	net spindle-speed-fb => vfdmod.spindle.rpm-out <= spindle.0.speed-in
 	net spindle-at-speed <= vfdmod.spindle.at-speed <= spindle.0.at-speed
 	net spindle-forward => vfdmod.control.run-forward <= spindle.0.forward
-	net spindle-reverse => vfdmod.control.run-reverse <= spindle.0.reverse
+	# We've inverted the speed above rather than letting vfdmod do it.
+	net spindle-reverse => vfdmod.control.run-forward <= spindle.0.reverse
 
 
 # estop loopback, SPI comms enable and feedback
