@@ -1,1 +1,4 @@
-
+*.pickle
+*.bu
+*.var
+*.bak
