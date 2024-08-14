@@ -1,0 +1,72 @@
+O<init_probe> SUB
+                                                                   (PRINT,Probe init)
+  G94                                                              (PRINT,use feedrate in units/min )
+  G92.1                                                            (PRINT,remove G92 offsets)
+  G90                                                              (PRINT,absolute distance mode)
+  G49                                                              (PRINT,cancel tool length compensation)
+  G40                                                              (PRINT,turn cutter compensation off)
+  G10 L2 P0 X0 Y0 Z0                                               (PRINT,reset coordinate system)
+  O100 IF [ #<_current_tool> NE 99 ]                               (PRINT,tool loaded: #<_current_tool>;)
+    T99 M6                                                         (PRINT,mount probe)
+  O100 ENDIF
+  O101 IF [ #<_metric> EQ 1 ]                                      (PRINT,set probe feeds according to units )
+    #<fast> =  150.0                                               (PRINT,selected metric units )
+    #<slow> =   30.0
+    #<retract> = 3.0
+    #<tool_diam> = #5410                                           (PRINT,tool diameter=#<tool_diam>mm)
+  O101 ELSE
+    #<fast> =    6.0                                               (PRINT,selected imperial units )
+    #<slow> =    1.2
+    #<retract> = 0.1
+    #<tool_diam> = #5410                                           (PRINT,tool diameter=#<tool_diam>in)
+  O101 ENDIF
+                                                                   (PRINT,touch plate Z probe)
+  G38.2 Z[#<_ini[AXIS_Z]MIN_LIMIT>] F[#<fast>]                     (PRINT,Z probe toward workpiece with error )
+  G91                                                              (PRINT,relative move )
+  G0 Z[#<retract>]                                                 (PRINT,retract)
+  G0 Z-[#<retract>/2]                                              (PRINT,move forward half retract distance)
+  G38.2 Z-[#<retract>] F[#<slow>]                                  (PRINT,Z probe slowly, got Z probe at #5063)
+  G10 L20 P0 Z[#<_ini[TOUCHPLATE]OFFSETZ>]                         (PRINT,set Z offset in current WCS)
+  G0 Z#<retract>                                                   (PRINT,retract)
+   
+                                                                   (PRINT,touch plate X probe)
+  G0 X-[#<retract> + #<tool_diam>]                                 (PRINT,move in front of touch plate)
+  G0 Z-[#<retract> * 2]                                            (PRINT,go down by twice retract length)
+  G38.2 X[#<retract> + #<tool_diam>] F[#<fast>]                    (PRINT,X probe toward workpiece with error )
+  G0 X-[#<retract>]                                                (PRINT,retract)
+  G0 X[#<retract>/2]                                               (PRINT,move forward half retract distance)
+  G38.2 X[#<retract> + #<tool_diam>] F[#<slow>]                    (PRINT,X probe slowly, got X probe at #5061)
+  G10 L20 P0 X-[#<_ini[TOUCHPLATE]OFFSETX> + #<tool_diam> / 2]     (PRINT,set X offset in current WCS)
+  G0 X-[#<retract>] Z[#<retract>*2]                                (PRINT,retract)
+ 
+                                                                   (PRINT,Touch plate Y probe)
+  G0 X[#<retract> + #<tool_diam>] Y-[#<retract> + #<tool_diam>]    (PRINT,move below of touch plate)
+  G0 Z-[#<retract>*2]                                              (PRINT,go down by twice retract length)
+  G38.2 Y[#<retract> + #<tool_diam>] F[#<fast>]                    (PRINT,X probe toward workpiece with error)
+  G0 Y-[#<retract>]                                                (PRINT,retract)
+  G0 Y[#<retract>/2]                                               (PRINT,move forward half retract distance)
+  G38.2 Y[#<retract> + #<tool_diam>] F[#<slow>]                    (PRINT,Y probe slowly, got Y probe at #5062)
+  G10 L20 P0 Y-[#<_ini[TOUCHPLATE]OFFSETY> + #<tool_diam> / 2]     (PRINT,set Y offset in current WCS)
+  G0 Y-[#<retract>] Z[#<retract> * 2]                              (PRINT,retract)
+
+  G90                                                              (PRINT,absolute move)
+
+  G0 X0 Y0                                                         (PRINT,move to travel height)
+  G53 G0 Z[#<_ini[CHANGE_POSITION]TRAVELZ>]                        (PRINT,move to safe travel height)
+  G53 G0 X[#<_ini[TOOLSENSOR]X>] Y[#<_ini[TOOLSENSOR]Y>]           (PRINT,move to toolsensor)
+  G53 G0 Z[#<_ini[TOOLSENSOR]Z>]
+ 
+  F #<_hal[gmoccapy.searchvel]>                                    (PRINT,set search speed)
+  G91                                                              (PRINT,relative move )
+  G38.2 Z#<_ini[TOOLSENSOR]MAXPROBE>                               (PRINT,touch sensor)
+  G0 Z2                                                            (PRINT,release sensor)
+  F #<_hal[gmoccapy.probevel]>                                     (PRINT,set probe speed)
+  G38.2 Z-4                                                        (PRINT,touch sensor)
+  #4963 = #5063                                                    (PRINT,store probe trigger Z value)
+  G90                                                              (PRINT,absolute move)
+  G53 G0 Z[#<_ini[CHANGE_POSITION]TRAVELZ>]                        (PRINT,move to travel height)
+  G53 G0 X[#<_ini[CHANGE_POSITION]X>] Y[#<_ini[CHANGE_POSITION]Y>] (PRINT,move to change position)
+  G53 G0 Z[#<_ini[CHANGE_POSITION]Z>]
+
+O<init_probe> ENDSUB
+M2
