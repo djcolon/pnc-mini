@@ -1,7 +1,7 @@
-O<tool-change> SUB
+O<dc-tool-change> SUB
 ( see: http://www.linuxcnc.org/index.php/english/forum/10-advanced-configuration/5596-manual-tool-change--tool-lengh-touch-off?start=30#48235 )
 
-( Filename: tool-change.ngc )
+( Filename: dc-tool-change.ngc )
 ( LinuxCNC Manual Tool-Change Subroutines for Milling Machines version 1.1: subroutine 1/2 )
 ( BEFORE USING CHANGE "CONFIGURATION PARAMETERS" BELOW FOR YOUR MACHINE! )
 (  )
@@ -9,8 +9,8 @@ O<tool-change> SUB
 ( In the LinuxCNC .ini config file, under the [RS274NGC] section add: )
 (    # change/add/use SUBROUTINE_PATH to point to the location where these tool-change subroutines are located: )
 (    SUBROUTINE_PATH = macros )
-(    REMAP=M6    modalgroup=6 ngc=tool-change )
-(    REMAP=M600  modalgroup=6 ngc=tool-job-begin )
+(    REMAP=M6    modalgroup=6 ngc=dc-tool-change )
+(    REMAP=M600  modalgroup=6 ngc=dc-tool-job-begin )
 
 ( and under the [EMCIO] section add: )
 (    TOOL_CHANGE_AT_G30 = 0 )
@@ -70,11 +70,11 @@ O<tool-change> SUB
 #<_TravelFeed> =      3000.0     ( feedrate used for general Z moves when avoiding G0 )
 #<_ProbeX> =           297.5     ( machine X coordinate of switch/touch-off plate )
 #<_ProbeY> =           431     ( machine Y coordinate of switch/touch-off plate )
-#<_ProbeFastZ> =       -20     ( machine Z coord to move to before starting probe, longest tool should not touch switch at this Z )
+#<_ProbeFastZ> =       -7     ( machine Z coord to move to before starting probe, longest tool should not touch switch at this Z )
 #<_ProbeMinZ> =        -45     ( machine Z coord to stop probe, shortest tool must touch switch at this Z, must be > min Z )
 #<_ProbeRetract> =      1     ( small distance to retract before approaching switch/touch-off plate second time )
 #<_ProbeFastFeed> =   800.0     ( feed rate for moving to _ProbeFastZ )
-#<_ProbeFeed1> =       30.0     ( feed rate for touching switch/touch-off plate first time )
+#<_ProbeFeed1> =       40.0     ( feed rate for touching switch/touch-off plate first time )
 #<_ProbeFeed2> =        6.0     ( feed rate for touching switch/touch-off plate second time )
 #<_ToolChangeX> =       0     ( machine X coordinate to pause at for manual tool changing )
 #<_ToolChangeY> =       0     ( machine Y coordinate to pause at for manual tool changing )
@@ -168,5 +168,5 @@ O200 ELSE
   
 O200 ENDIF
 
-O<tool-change> ENDSUB
+O<dc-tool-change> ENDSUB
 M2

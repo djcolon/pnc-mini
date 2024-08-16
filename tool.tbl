@@ -1,7 +1,7 @@
 ;Tool  Pocket Z Offset     Diameter     Remark
-T1     P1     Z+0.511000   D+0.125000   ; 1/8 end mill
-T2     P2     Z+0.100000   D+0.062500   ; 1/16 end mill
-T3     P3     Z+1.273000   D+0.201000   ; #7 tap drill
+T1     P1     Z+0.000000   D+2.500000   ; Cheap 2.5mm flat 2F
+T2     P2     Z+0.000000   D+6.000000   ; 6mm 1F DLC
+T3     P3     Z+0.000000   D+0.000000   ; 60 degree v-bit
 T4     P4     Z+0.000000   D+0.000000   ; Added 20220921
 T5     P5     Z+0.000000   D+0.000000   ; Added 20220921
 T6     P6     Z+0.000000   D+0.000000   ; Added 20220921
@@ -24,5 +24,5 @@ T22    P22    Z+0.000000   D+0.000000   ; Added 20220921
 T23    P23    Z+0.000000   D+0.000000   ; Added 20220921
 T24    P24    Z+0.000000   D+0.000000   ; Added 20220921
 T25    P25    Z+0.000000   D+0.000000   ; Added 20220921
+T99    P0     Z+0.000000   D+2.000000   ; probe
 T99999 P99999 Z+0.100000   D+0.000000   ; big tool number
-T99    P0     Z+0.000000   D+0.000000   ; master
